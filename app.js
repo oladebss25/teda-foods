@@ -1,10 +1,14 @@
 // ─────────────────────────────────────────────
 //  Teda Foods — app.js
-//  Hallmark redesign · counter-service structure
-//  Class names aligned with style.css token system
 // ─────────────────────────────────────────────
 
-// Menu dataset, divided by category
+const CONFIG = {
+  phone: '08070599262',
+  phoneInternational: '2348070599262',
+  paystackPublicKey: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || 'pk_live_2ac524dfe7371a9ad3ea0c3befb355d7e464b3d1',
+  placeholderImage: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 220 148%22%3E%3Crect fill=%22%232a2a2a%22 width=%22220%22 height=%22148%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22central%22 text-anchor=%22middle%22 fill=%22%23666%22 font-size=%2216%22 font-family=%22sans-serif%22%3EImage unavailable%3C/text%3E%3C/svg%3E',
+};
+
 const menuData = [
   {
     category: 'Rice Combos',
@@ -174,81 +178,176 @@ const menuData = [
 
 let cart = {};
 let selectedPayment = 'online';
+let isSubmitting = false;
+let lastSubmitTime = 0;
 
-// ─── Render menu categories and cards ──────────────────────────
+function sanitize(str) {
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.textContent;
+}
+
+function truncate(str, max) {
+  return str.length > max ? str.slice(0, max) : str;
+}
+
+function createEl(tag, attrs) {
+  const el = document.createElement(tag);
+  if (attrs) {
+    Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+  }
+  return el;
+}
+
+// ─── Render menu ───────────────────────────────────────────────
 function renderMenu() {
   const container = document.getElementById('menu-container');
   if (!container) return;
 
-  let html = '';
+  const fragment = document.createDocumentFragment();
+
   menuData.forEach((cat) => {
-    html += `
-      <div class="cat-block">
-        <div class="cat-header">
-          <div class="cat-label">${cat.category}</div>
-          <div class="cat-rule"></div>
-        </div>
-        <div class="menu-grid">
-    `;
+    const catBlock = createEl('div', { class: 'cat-block reveal' });
+    const header = createEl('div', { class: 'cat-header' });
+    const label = createEl('div', { class: 'cat-label' });
+    label.textContent = cat.category;
+    header.appendChild(label);
+    const rule = createEl('div', { class: 'cat-rule' });
+    header.appendChild(rule);
+    catBlock.appendChild(header);
+
+    const grid = createEl('div', { class: 'menu-grid stagger-children' });
+    catBlock.appendChild(grid);
 
     cat.items.forEach((item) => {
-      html += `
-        <div class="menu-card" data-id="${item.id}" data-name="${item.name}" data-price="${item.price}" onclick="toggleItem(this)">
-          <div class="card-img">
-            <img src="${item.image}" alt="${item.displayName}" loading="lazy" width="220" height="148">
-          </div>
-          <div class="card-body">
-            <div class="card-name">${item.displayName}</div>
-            <div class="card-footer">
-              <div class="card-price">${item.displayPrice}</div>
-              <div class="card-actions">
-                <button class="btn-add main-plus" aria-label="Add ${item.displayName}" onclick="void(0)">+</button>
-                <div class="card-qty">
-                  <button class="qty-btn" onclick="changeQty(event, this, -1)" aria-label="Decrease quantity">−</button>
-                  <span class="qty-num">1</span>
-                  <button class="qty-btn" onclick="changeQty(event, this, 1)" aria-label="Increase quantity">+</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
+      const card = createEl('div', {
+        class: 'menu-card',
+        'data-id': item.id,
+        'data-name': item.name,
+        'data-price': String(item.price),
+        tabindex: '0',
+        role: 'button',
+        'aria-label': `Add ${item.displayName} — ${item.displayPrice}`,
+      });
+
+      const imgWrap = createEl('div', { class: 'card-img' });
+      const img = createEl('img', {
+        src: item.image,
+        alt: item.displayName,
+        loading: 'lazy',
+        width: '220',
+        height: '148',
+      });
+      img.addEventListener('error', () => { img.src = CONFIG.placeholderImage; });
+      imgWrap.appendChild(img);
+      card.appendChild(imgWrap);
+
+      const body = createEl('div', { class: 'card-body' });
+      const nameEl = createEl('div', { class: 'card-name' });
+      nameEl.textContent = item.displayName;
+      body.appendChild(nameEl);
+
+      const footer = createEl('div', { class: 'card-footer' });
+      const priceEl = createEl('div', { class: 'card-price' });
+      priceEl.textContent = item.displayPrice;
+      footer.appendChild(priceEl);
+
+      const actions = createEl('div', { class: 'card-actions' });
+      const addBtn = createEl('button', {
+        class: 'btn-add main-plus',
+        'aria-label': `Add ${item.displayName}`,
+        type: 'button',
+      });
+      addBtn.textContent = '+';
+      actions.appendChild(addBtn);
+
+      const qtyWrap = createEl('div', { class: 'card-qty' });
+      const decBtn = createEl('button', {
+        class: 'qty-btn',
+        'aria-label': 'Decrease quantity',
+        type: 'button',
+      });
+      decBtn.textContent = '−';
+      const qtyNum = createEl('span', { class: 'qty-num' });
+      qtyNum.textContent = '1';
+      const incBtn = createEl('button', {
+        class: 'qty-btn',
+        'aria-label': 'Increase quantity',
+        type: 'button',
+      });
+      incBtn.textContent = '+';
+      qtyWrap.appendChild(decBtn);
+      qtyWrap.appendChild(qtyNum);
+      qtyWrap.appendChild(incBtn);
+      actions.appendChild(qtyWrap);
+      footer.appendChild(actions);
+      body.appendChild(footer);
+      card.appendChild(body);
+
+      card.addEventListener('click', () => toggleItem(card));
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleItem(card);
+        }
+      });
+
+      addBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleItem(card);
+      });
+      decBtn.addEventListener('click', (e) => changeQty(e, decBtn, -1));
+      incBtn.addEventListener('click', (e) => changeQty(e, incBtn, 1));
+
+      grid.appendChild(card);
     });
 
-    html += `
-        </div>
-      </div>
-    `;
+    fragment.appendChild(catBlock);
   });
 
-  container.innerHTML = html;
+  container.appendChild(fragment);
 }
 
-// ─── Payment method selector ────────────────────────────────────
+// ─── Payment method selector ──────────────────────────────────
 function selectPayment(type) {
   selectedPayment = type;
-  document.getElementById('pay-online').classList.toggle('active', type === 'online');
-  document.getElementById('pay-whatsapp').classList.toggle('active', type === 'whatsapp');
+  const online = document.getElementById('pay-online');
+  const whatsapp = document.getElementById('pay-whatsapp');
+  online.classList.toggle('active', type === 'online');
+  whatsapp.classList.toggle('active', type === 'whatsapp');
+  online.setAttribute('aria-checked', type === 'online');
+  whatsapp.setAttribute('aria-checked', type === 'whatsapp');
+
   const btn = document.getElementById('submit-btn');
   const btnText = btn.querySelector('.btn-text');
   const btnIcon = btn.querySelector('.btn-icon');
   const note = document.querySelector('.pay-note');
   if (type === 'online') {
     if (btnText) btnText.textContent = 'Pay Now — Secure Checkout';
-    if (btnIcon) btnIcon.innerHTML = `<i class="hgi-stroke hgi-credit-card icon-inline"></i>`;
-    if (note)
-      note.innerHTML =
-        'Powered by <strong>Paystack</strong> — 100% secure. Cards, bank transfer &amp; USSD accepted.';
+    if (btnIcon) btnIcon.innerHTML = '<i class="hgi-stroke hgi-credit-card icon-inline"></i>';
+    if (note) {
+      note.textContent = '';
+      const s1 = document.createElement('strong');
+      s1.textContent = 'Paystack';
+      note.appendChild(document.createTextNode('Powered by '));
+      note.appendChild(s1);
+      note.appendChild(document.createTextNode(' — 100% secure. Cards, bank transfer & USSD accepted.'));
+    }
   } else {
     if (btnText) btnText.textContent = 'Send Order via WhatsApp';
-    if (btnIcon) btnIcon.innerHTML = `<i class="hgi-stroke hgi-whatsapp icon-inline"></i>`;
-    if (note)
-      note.innerHTML =
-        'Your order will open in WhatsApp. We\'ll confirm &amp; get it ready fast. <span class="pay-note-success">Fast &amp; easy!</span>';
+    if (btnIcon) btnIcon.innerHTML = '<i class="hgi-stroke hgi-whatsapp icon-inline"></i>';
+    if (note) {
+      note.textContent = '';
+      note.appendChild(document.createTextNode("Your order will open in WhatsApp. We'll confirm & get it ready fast. "));
+      const span = document.createElement('span');
+      span.className = 'pay-note-success';
+      span.textContent = 'Fast & easy!';
+      note.appendChild(span);
+    }
   }
 }
 
-// ─── Toggle item in/out of cart ────────────────────────────────
+// ─── Toggle item in/out of cart ──────────────────────────────
 function toggleItem(card) {
   const id = card.dataset.id;
   if (card.classList.contains('selected')) {
@@ -259,20 +358,20 @@ function toggleItem(card) {
     card.classList.add('selected');
     cart[id] = {
       name: card.dataset.name,
-      price: parseInt(card.dataset.price),
+      price: parseInt(card.dataset.price, 10),
       qty: 1,
     };
   }
   updateCart();
 }
 
-// ─── Quantity change ────────────────────────────────────────────
+// ─── Quantity change ──────────────────────────────────────────
 function changeQty(e, btn, delta) {
   e.stopPropagation();
   const card = btn.closest('.menu-card');
   const id = card.dataset.id;
   const qtyEl = card.querySelector('.qty-num');
-  let qty = parseInt(qtyEl.textContent) + delta;
+  let qty = parseInt(qtyEl.textContent, 10) + delta;
   if (qty < 1) {
     toggleItem(card);
     return;
@@ -282,7 +381,7 @@ function changeQty(e, btn, delta) {
   updateCart();
 }
 
-// ─── Sync DOM with cart state ───────────────────────────────────
+// ─── Sync DOM with cart state ─────────────────────────────────
 function updateCart() {
   const ids = Object.keys(cart);
   const cartFloat = document.getElementById('cart-float');
@@ -306,26 +405,35 @@ function updateCart() {
   osItems.style.display = 'block';
   osTotal.style.display = 'flex';
 
-  let html = '';
+  osItems.textContent = '';
+  const fragment = document.createDocumentFragment();
   let total = 0;
   ids.forEach((id) => {
     const item = cart[id];
     const sub = item.price * item.qty;
     total += sub;
-    html += `
-      <div class="tray-item">
-        <div class="tray-item-name">${item.name}</div>
-        <div class="tray-item-right">
-          <div class="tray-item-price">₦${sub.toLocaleString()}</div>
-          <div class="tray-item-qty">x${item.qty} @ ₦${item.price.toLocaleString()}</div>
-        </div>
-      </div>`;
+
+    const row = createEl('div', { class: 'tray-item' });
+    const nameDiv = createEl('div', { class: 'tray-item-name' });
+    nameDiv.textContent = item.name;
+    row.appendChild(nameDiv);
+
+    const right = createEl('div', { class: 'tray-item-right' });
+    const priceDiv = createEl('div', { class: 'tray-item-price' });
+    priceDiv.textContent = '₦' + sub.toLocaleString();
+    right.appendChild(priceDiv);
+    const qtyDiv = createEl('div', { class: 'tray-item-qty' });
+    qtyDiv.textContent = 'x' + item.qty + ' @ ₦' + item.price.toLocaleString();
+    right.appendChild(qtyDiv);
+    row.appendChild(right);
+
+    fragment.appendChild(row);
   });
-  osItems.innerHTML = html;
+  osItems.appendChild(fragment);
   totalAmt.textContent = '₦' + total.toLocaleString();
 }
 
-// ─── Toast notifications ────────────────────────────────────────
+// ─── Toast ─────────────────────────────────────────────────────
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -333,84 +441,155 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-// ─── Cart summary string builder ────────────────────────────────
+// ─── Cart summary ──────────────────────────────────────────────
 function getOrderSummary() {
   let orderLines = '';
   let total = 0;
   Object.values(cart).forEach((item) => {
     const sub = item.price * item.qty;
     total += sub;
-    orderLines += `• ${item.name} x${item.qty} = ₦${sub.toLocaleString()}\n`;
+    orderLines += '• ' + item.name + ' x' + item.qty + ' = ₦' + sub.toLocaleString() + '\n';
   });
   return { orderLines, total };
 }
 
-// ─── WhatsApp order sender ──────────────────────────────────────
+// ─── WhatsApp order sender ────────────────────────────────────
 function sendWhatsApp(name, phone, location, notes) {
   const { orderLines, total } = getOrderSummary();
   const msg =
-    `*New Order — Teda Foods*\n\n` +
-    `*Name:* ${name}\n` +
-    `*Phone:* ${phone}\n` +
-    `*Deliver to:* ${location || 'Not specified'}\n\n` +
-    `*Order:*\n${orderLines}\n` +
-    `*Total:* ₦${total.toLocaleString()}\n\n` +
-    (notes ? `*Notes:* ${notes}\n\n` : '') +
-    `Ordered via Teda Foods website`;
-  window.open(`https://wa.me/2348070599262?text=${encodeURIComponent(msg)}`, '_blank');
+    '*New Order — Teda Foods*\n\n' +
+    '*Name:* ' + name + '\n' +
+    '*Phone:* ' + phone + '\n' +
+    '*Deliver to:* ' + (location || 'Not specified') + '\n\n' +
+    '*Order:*\n' + orderLines + '\n' +
+    '*Total:* ₦' + total.toLocaleString() + '\n\n' +
+    (notes ? '*Notes:* ' + notes + '\n\n' : '') +
+    'Ordered via Teda Foods website';
+  window.open('https://wa.me/' + CONFIG.phoneInternational + '?text=' + encodeURIComponent(msg), '_blank');
 }
 
-// ─── Success UI state ───────────────────────────────────────────
-function showSuccess(message) {
-  document.getElementById('order-form-wrap').style.display = 'none';
-  const sm = document.getElementById('success-msg');
-  sm.style.display = 'block';
-  document.getElementById('success-detail').innerHTML = message;
-  document.getElementById('cart-float').classList.remove('visible');
-  document.getElementById('order').scrollIntoView({ behavior: 'smooth' });
+// ─── Inline validation ────────────────────────────────────────
+const validators = {
+  fname: {
+    test: (v) => v.trim().length >= 2,
+    msg: 'Please enter your name (at least 2 characters).',
+  },
+  fphone: {
+    test: (v) => /^0\d{10}$/.test(v.trim()),
+    msg: 'Enter a valid Nigerian phone number (e.g. 08012345678).',
+  },
+  femail: {
+    test: (v) => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),
+    msg: 'Enter a valid email address.',
+  },
+};
+
+function validateField(id) {
+  const el = document.getElementById(id);
+  const errorEl = document.getElementById(id + '-error');
+  const group = el.closest('.form-group');
+  const raw = el.value;
+  const val = raw.trim();
+  const rule = validators[id];
+  let valid = true;
+
+  if (rule) {
+    valid = rule.test(raw);
+  } else {
+    valid = val.length > 0 || !el.hasAttribute('required');
+  }
+
+  if (!valid) {
+    errorEl.textContent = rule ? rule.msg : 'This field is required.';
+    errorEl.classList.add('visible');
+    if (group) group.classList.add('has-error');
+  } else {
+    errorEl.textContent = '';
+    errorEl.classList.remove('visible');
+    if (group) group.classList.remove('has-error');
+  }
+  return valid;
 }
 
-// ─── Place order entry point ────────────────────────────────────
-function placeOrder() {
+function validateAll() {
+  const fields = ['fname', 'fphone', 'femail'];
+  let allValid = true;
+  let firstInvalid = null;
+  fields.forEach((id) => {
+    const ok = validateField(id);
+    if (!ok) {
+      allValid = false;
+      if (!firstInvalid) firstInvalid = document.getElementById(id);
+    }
+  });
+  if (firstInvalid) firstInvalid.focus();
+  return allValid;
+}
+
+// ─── Form submit handler ──────────────────────────────────────
+function placeOrder(e) {
+  if (e) e.preventDefault();
+
+  if (isSubmitting) return;
+  const now = Date.now();
+  if (now - lastSubmitTime < 3000) {
+    showToast('Please wait a moment before trying again.');
+    return;
+  }
+
   const name = document.getElementById('fname').value.trim();
   const phone = document.getElementById('fphone').value.trim();
   const emailEl = document.getElementById('femail');
   const email = emailEl ? emailEl.value.trim() : '';
   const location = document.getElementById('flocation').value.trim();
-  const notes = document.getElementById('fnotes').value.trim();
+  const notes = sanitize(truncate(document.getElementById('fnotes').value.trim(), 500));
 
-  if (!name || !phone) {
-    showToast('Please enter your name and phone number.');
-    return;
-  }
+  if (!validateAll()) return;
+
   if (Object.keys(cart).length === 0) {
     showToast('Please select at least one item from the board above.');
     return;
   }
 
+  isSubmitting = true;
+  lastSubmitTime = now;
+  const btn = document.getElementById('submit-btn');
+  const spinner = document.getElementById('submit-spinner');
+  btn.disabled = true;
+  btn.classList.add('loading');
+  spinner.classList.add('visible');
+
   if (selectedPayment === 'whatsapp') {
     sendWhatsApp(name, phone, location, notes);
+    isSubmitting = false;
+    btn.disabled = false;
+    btn.classList.remove('loading');
+    spinner.classList.remove('visible');
     showSuccess(
       "Your order has been sent to us via WhatsApp. We'll confirm and get it ready for you!<br><br>" +
-        'Questions? Call us at <a href="tel:08070599262">08070599262</a>',
+        'Questions? Call us at <a href="tel:' + CONFIG.phone + '">' + CONFIG.phone + '</a>',
     );
     return;
   }
 
-  // Online payment via Paystack
   if (!email) {
     showToast('Please enter your email address for the payment receipt.');
+    isSubmitting = false;
+    btn.disabled = false;
+    btn.classList.remove('loading');
+    spinner.classList.remove('visible');
     return;
   }
 
   const { total, orderLines } = getOrderSummary();
+  const ref = 'TEDA-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
 
   const handler = PaystackPop.setup({
-    key: 'pk_live_2ac524dfe7371a9ad3ea0c3befb355d7e464b3d1',
+    key: CONFIG.paystackPublicKey,
     email,
-    amount: total * 100, // kobo
+    amount: total * 100,
     currency: 'NGN',
-    ref: 'TEDA-' + Date.now(),
+    ref: ref,
     metadata: {
       custom_fields: [
         { display_name: 'Customer Name', variable_name: 'customer_name', value: name },
@@ -425,36 +604,60 @@ function placeOrder() {
       ],
     },
     callback(response) {
-      // Also ping WhatsApp so merchant is notified instantly
       sendWhatsApp(
         name,
         phone,
         location,
-        (notes ? notes + '\n' : '') + `PAID via Paystack. Ref: ${response.reference}`,
+        (notes ? notes + '\n' : '') + 'PAID via Paystack. Ref: ' + response.reference,
       );
+      isSubmitting = false;
+      btn.disabled = false;
+      btn.classList.remove('loading');
+      spinner.classList.remove('visible');
       showSuccess(
-        `Payment successful! Your order is confirmed.<br><br>` +
-          `Reference: <strong>${response.reference}</strong><br><br>` +
-          `We've also notified our kitchen via WhatsApp. ` +
-          `Questions? Call <a href="tel:08070599262">08070599262</a>`,
+        'Payment successful! Your order is confirmed.<br><br>' +
+          'Reference: <strong>' + response.reference + '</strong><br><br>' +
+          "We've also notified our kitchen via WhatsApp. " +
+          'Questions? Call <a href="tel:' + CONFIG.phone + '">' + CONFIG.phone + '</a>',
       );
     },
     onClose() {
-      showToast('Payment window closed. Tap "Pay Now" whenever you\'re ready.');
+      isSubmitting = false;
+      btn.disabled = false;
+      btn.classList.remove('loading');
+      spinner.classList.remove('visible');
+      showToast("Payment window closed. Tap 'Pay Now' whenever you're ready.");
     },
   });
   handler.openIframe();
 }
 
-// ─── Mobile nav drawer toggle ───────────────────────────────────
+// ─── Success ──────────────────────────────────────────────────
+function showSuccess(message) {
+  document.getElementById('order-form-wrap').style.display = 'none';
+  const sm = document.getElementById('success-msg');
+  sm.style.display = 'block';
+  const detail = document.getElementById('success-detail');
+  detail.textContent = '';
+  const p = document.createElement('p');
+  p.innerHTML = message;
+  detail.appendChild(p);
+  document.getElementById('cart-float').classList.remove('visible');
+  document.getElementById('order').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ─── Mobile nav drawer ────────────────────────────────────────
 function toggleMenu() {
   const links = document.getElementById('nav-links');
   const hamburger = document.getElementById('nav-hamburger');
   const isOpen = links.classList.toggle('active');
 
-  if (hamburger) hamburger.classList.toggle('active', isOpen);
+  if (hamburger) {
+    hamburger.classList.toggle('active', isOpen);
+    hamburger.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+    hamburger.setAttribute('aria-expanded', String(isOpen));
+  }
 
-  // Backdrop mask — create once, reuse
   let mask = document.querySelector('.nav-mask');
   if (!mask) {
     mask = document.createElement('div');
@@ -463,14 +666,83 @@ function toggleMenu() {
     mask.addEventListener('click', toggleMenu);
   }
   mask.classList.toggle('active', isOpen);
+
+  if (isOpen) {
+    trapFocus(links);
+  } else {
+    releaseFocus();
+  }
 }
 
-// ─── Keyboard support for nav hamburger & cart float ───────────
+// ─── Focus trap ──────────────────────────────────────────────
+let focusTrapRoot = null;
+let focusTrapActive = false;
+
+function trapFocus(root) {
+  focusTrapRoot = root;
+  focusTrapActive = true;
+}
+
+function releaseFocus() {
+  focusTrapActive = false;
+  focusTrapRoot = null;
+}
+
+function handleTab(e) {
+  if (!focusTrapActive || !focusTrapRoot) return;
+  const focusable = focusTrapRoot.querySelectorAll('a[href], button, [tabindex]:not([tabindex="-1"])');
+  if (focusable.length === 0) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (e.shiftKey) {
+    if (document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    }
+  } else {
+    if (document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+}
+
+// ─── Intersection Observer ────────────────────────────────────
+let observer = null;
+
+function initRevealObserver() {
+  if (observer) observer.disconnect();
+  observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.12 },
+  );
+
+  document.querySelectorAll('.reveal, .stagger-children').forEach((el) => {
+    observer.observe(el);
+  });
+}
+
+// ─── DOMContentLoaded ─────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   renderMenu();
+  initRevealObserver();
+
+  const form = document.getElementById('order-form');
+  if (form) {
+    form.addEventListener('submit', placeOrder);
+  }
 
   const hamburger = document.getElementById('nav-hamburger');
   if (hamburger) {
+    hamburger.setAttribute('aria-haspopup', 'true');
+    hamburger.setAttribute('aria-expanded', 'false');
     hamburger.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
@@ -488,4 +760,44 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  document.querySelectorAll('.pay-option').forEach((el) => {
+    el.addEventListener('click', () => {
+      const type = el.id === 'pay-online' ? 'online' : 'whatsapp';
+      selectPayment(type);
+    });
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        const type = el.id === 'pay-online' ? 'online' : 'whatsapp';
+        selectPayment(type);
+      }
+    });
+  });
+
+  ['fname', 'fphone'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('blur', () => validateField(id));
+  });
+  const emailEl = document.getElementById('femail');
+  if (emailEl) emailEl.addEventListener('blur', () => validateField('femail'));
+
+  document.addEventListener('keydown', handleTab);
+
+  function scrollToOrder() {
+    document.getElementById('order').scrollIntoView({ behavior: 'smooth' });
+  }
+  const navCta = document.getElementById('nav-cta');
+  if (navCta) navCta.addEventListener('click', scrollToOrder);
+  const promoBtn = document.getElementById('promo-stripe-btn');
+  if (promoBtn) promoBtn.addEventListener('click', scrollToOrder);
+
+  document.querySelectorAll('.nav-links a').forEach((link) => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 640) {
+        const links = document.getElementById('nav-links');
+        if (links && links.classList.contains('active')) toggleMenu();
+      }
+    });
+  });
 });

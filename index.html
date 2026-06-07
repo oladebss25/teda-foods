@@ -4,22 +4,55 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Teda Foods — Crave, Eat, Repeat</title>
-    <meta
-      name="description"
-      content="Fresh jollof rice, fried rice, pasta & more made daily at FUNAAB, Abeokuta. Order online or via WhatsApp."
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="canonical" href="https://tedafoods.com.ng" />
+
+    <meta name="description" content="Fresh jollof rice, fried rice, pasta & more made daily at FUNAAB, Abeokuta. Order online or via WhatsApp." />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Teda Foods — Crave, Eat, Repeat" />
+    <meta property="og:description" content="Fresh jollof, fried rice, grilled proteins & more — made to order at FUNAAB, Abeokuta." />
+    <meta property="og:image" content="https://tedafoods.com.ng/images/teda_foods_logo.png" />
+    <meta property="og:url" content="https://tedafoods.com.ng" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Teda Foods — Crave, Eat, Repeat" />
+    <meta name="twitter:description" content="Fresh jollof, fried rice, grilled proteins & more — made to order at FUNAAB, Abeokuta." />
+    <meta name="twitter:image" content="https://tedafoods.com.ng/images/teda_foods_logo.png" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Restaurant",
+        "name": "Teda Foods",
+        "description": "Fresh jollof rice, fried rice, pasta & more made daily at FUNAAB, Abeokuta.",
+        "servesCuisine": "Nigerian",
+        "telephone": "+2348070599262",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Abeokuta",
+          "addressRegion": "Ogun State",
+          "addressCountry": "NG"
+        },
+        "menu": "https://tedafoods.com.ng/#menu",
+        "priceRange": "₦300-₦4500"
+      }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://cdn.hugeicons.com" />
+    <link rel="dns-prefetch" href="https://js.paystack.co" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.hugeicons.com/font/hgi-stroke-rounded.css" />
-    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <script src="https://js.paystack.co/v1/inline.js" defer></script>
     <link rel="icon" type="image/png" href="images/teda_foods_logo.png" />
     <link rel="stylesheet" href="style.css" />
   </head>
 
   <body>
-    <!-- NAV -->
+    <a href="#menu" class="skip-link">Skip to menu</a>
+
     <nav class="site-nav" id="top">
       <div class="nav-logo">
         <img src="images/teda_foods_logo.png" alt="Teda Foods" loading="eager" />
@@ -30,25 +63,12 @@
         <li><a href="#order">Order</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
-      <button
-        class="nav-cta"
-        onclick="document.getElementById('order').scrollIntoView({ behavior: 'smooth' })"
-      >
-        Order Now
-      </button>
-      <div
-        class="nav-hamburger"
-        id="nav-hamburger"
-        onclick="toggleMenu()"
-        aria-label="Open menu"
-        role="button"
-        tabindex="0"
-      >
+      <button class="nav-cta" id="nav-cta">Order Now</button>
+      <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMenu()" aria-label="Open menu" type="button">
         <span></span><span></span><span></span>
-      </div>
+      </button>
     </nav>
 
-    <!-- IDENTITY STRIP — brand moment without blocking the menu -->
     <div class="identity-strip">
       <div class="identity-text">
         <div class="identity-eyebrow">
@@ -56,10 +76,7 @@
           Alabata Abeokuta · FUNAAB
         </div>
         <h1 class="identity-headline">Crave. Eat.<br /><em>Repeat.</em></h1>
-        <p class="identity-sub">
-          Fresh jollof, fried rice, grilled proteins &amp; more — made to order, served hot, right
-          here on campus.
-        </p>
+        <p class="identity-sub">Fresh jollof, fried rice, grilled proteins &amp; more — made to order, served hot, right here on campus.</p>
         <div class="identity-actions">
           <a href="#menu" class="btn-primary">See Today's Menu</a>
           <a href="#order" class="btn-ghost-light">Place an Order</a>
@@ -77,48 +94,31 @@
       </div>
     </div>
 
-    <!-- TICKER -->
     <div class="ticker" aria-hidden="true">
       <div class="ticker-track">
-        <span class="ticker-item">Jollof Rice + Chicken + Zobo ₦3,000</span
-        ><span class="ticker-dot">·</span>
-        <span class="ticker-item">Jollof Rice + Turkey + Zobo ₦4,000</span
-        ><span class="ticker-dot">·</span>
-        <span class="ticker-item">Asun Jollof + Chicken ₦3,500</span
-        ><span class="ticker-dot">·</span>
-        <span class="ticker-item">Stir Fry Pasta + Chicken ₦2,500</span
-        ><span class="ticker-dot">·</span>
-        <span class="ticker-item">Fried Rice + Chicken ₦2,800</span
-        ><span class="ticker-dot">·</span>
-        <span class="ticker-item">Teda's Milkshake (50cl) ₦2,000</span
-        ><span class="ticker-dot">·</span> <span class="ticker-item">Ofada Rice Special ₦2,700</span
-        ><span class="ticker-dot">·</span>
-        <span class="ticker-item">Ewa-agoyin (with protein) ₦2,500</span
-        ><span class="ticker-dot">·</span> <span class="ticker-item">Teda's Zobo (35cl) ₦700</span
-        ><span class="ticker-dot">·</span> <span class="ticker-item">Fried Fish ₦500</span
-        ><span class="ticker-dot">·</span>
-        <!-- duplicate for seamless loop -->
-        <span class="ticker-item">Jollof Rice + Chicken + Zobo ₦3,000</span
-        ><span class="ticker-dot">·</span>
-        <span class="ticker-item">Jollof Rice + Turkey + Zobo ₦4,000</span
-        ><span class="ticker-dot">·</span>
-        <span class="ticker-item">Asun Jollof + Chicken ₦3,500</span
-        ><span class="ticker-dot">·</span>
-        <span class="ticker-item">Stir Fry Pasta + Chicken ₦2,500</span
-        ><span class="ticker-dot">·</span>
-        <span class="ticker-item">Fried Rice + Chicken ₦2,800</span
-        ><span class="ticker-dot">·</span>
-        <span class="ticker-item">Teda's Milkshake (50cl) ₦2,000</span
-        ><span class="ticker-dot">·</span> <span class="ticker-item">Ofada Rice Special ₦2,700</span
-        ><span class="ticker-dot">·</span>
-        <span class="ticker-item">Ewa-agoyin (with protein) ₦2,500</span
-        ><span class="ticker-dot">·</span> <span class="ticker-item">Teda's Zobo (35cl) ₦700</span
-        ><span class="ticker-dot">·</span> <span class="ticker-item">Fried Fish ₦500</span
-        ><span class="ticker-dot">·</span>
+        <span class="ticker-item">Jollof Rice + Chicken + Zobo ₦3,000</span><span class="ticker-dot">·</span>
+        <span class="ticker-item">Jollof Rice + Turkey + Zobo ₦4,000</span><span class="ticker-dot">·</span>
+        <span class="ticker-item">Asun Jollof + Chicken ₦3,500</span><span class="ticker-dot">·</span>
+        <span class="ticker-item">Stir Fry Pasta + Chicken ₦2,500</span><span class="ticker-dot">·</span>
+        <span class="ticker-item">Fried Rice + Chicken ₦2,800</span><span class="ticker-dot">·</span>
+        <span class="ticker-item">Teda's Milkshake (50cl) ₦2,000</span><span class="ticker-dot">·</span>
+        <span class="ticker-item">Ofada Rice Special ₦2,700</span><span class="ticker-dot">·</span>
+        <span class="ticker-item">Ewa-agoyin (with protein) ₦2,500</span><span class="ticker-dot">·</span>
+        <span class="ticker-item">Teda's Zobo (35cl) ₦700</span><span class="ticker-dot">·</span>
+        <span class="ticker-item">Fried Fish ₦500</span><span class="ticker-dot">·</span>
+        <span class="ticker-item">Jollof Rice + Chicken + Zobo ₦3,000</span><span class="ticker-dot">·</span>
+        <span class="ticker-item">Jollof Rice + Turkey + Zobo ₦4,000</span><span class="ticker-dot">·</span>
+        <span class="ticker-item">Asun Jollof + Chicken ₦3,500</span><span class="ticker-dot">·</span>
+        <span class="ticker-item">Stir Fry Pasta + Chicken ₦2,500</span><span class="ticker-dot">·</span>
+        <span class="ticker-item">Fried Rice + Chicken ₦2,800</span><span class="ticker-dot">·</span>
+        <span class="ticker-item">Teda's Milkshake (50cl) ₦2,000</span><span class="ticker-dot">·</span>
+        <span class="ticker-item">Ofada Rice Special ₦2,700</span><span class="ticker-dot">·</span>
+        <span class="ticker-item">Ewa-agoyin (with protein) ₦2,500</span><span class="ticker-dot">·</span>
+        <span class="ticker-item">Teda's Zobo (35cl) ₦700</span><span class="ticker-dot">·</span>
+        <span class="ticker-item">Fried Fish ₦500</span><span class="ticker-dot">·</span>
       </div>
     </div>
 
-    <!-- TODAY'S BOARD — the menu, first thing mobile users see -->
     <section class="board-section" id="menu">
       <div class="board-header">
         <h2 class="board-title">Today's Board</h2>
@@ -127,15 +127,11 @@
       <div id="menu-container"></div>
     </section>
 
-    <!-- STORY + HOW IT WORKS -->
     <section class="story-section">
       <div class="story-grid">
         <div>
           <h2 class="story-tagline">Real food.<br />No <em>shortcuts.</em></h2>
-          <p class="story-body">
-            We're a student-run kitchen at FUNAAB, Abeokuta. Every dish is made fresh every day — no
-            reheated meals, no frozen proteins. Just honest, flavourful food made with care.
-          </p>
+          <p class="story-body">We're a student-run kitchen at FUNAAB, Abeokuta. Every dish is made fresh every day — no reheated meals, no frozen proteins. Just honest, flavourful food made with care.</p>
         </div>
         <div>
           <ul class="steps-list">
@@ -143,27 +139,21 @@
               <span class="step-num-badge">01</span>
               <div class="step-content">
                 <div class="step-name">Pick your meal</div>
-                <div class="step-desc">
-                  Browse the board above and tap items to add them to your tray.
-                </div>
+                <div class="step-desc">Browse the board above and tap items to add them to your tray.</div>
               </div>
             </li>
             <li class="step-item">
               <span class="step-num-badge">02</span>
               <div class="step-content">
                 <div class="step-name">Fill your details</div>
-                <div class="step-desc">
-                  Enter your name, phone number, and delivery or pickup location.
-                </div>
+                <div class="step-desc">Enter your name, phone number, and delivery or pickup location.</div>
               </div>
             </li>
             <li class="step-item">
               <span class="step-num-badge">03</span>
               <div class="step-content">
                 <div class="step-name">We confirm on WhatsApp</div>
-                <div class="step-desc">
-                  Your order goes straight to us. We'll confirm and get it ready fast.
-                </div>
+                <div class="step-desc">Your order goes straight to us. We'll confirm and get it ready fast.</div>
               </div>
             </li>
           </ul>
@@ -171,35 +161,23 @@
       </div>
     </section>
 
-    <!-- PROMO STRIPE -->
     <div class="promo-stripe">
       <div>
         <div class="promo-stripe-text">First order? We've got you!</div>
-        <div class="promo-stripe-sub">
-          Tell us it's your first time when ordering — enjoy a little treat on us.
-        </div>
+        <div class="promo-stripe-sub">Tell us it's your first time when ordering — enjoy a little treat on us.</div>
       </div>
-      <button
-        class="promo-stripe-btn"
-        onclick="document.getElementById('order').scrollIntoView({ behavior: 'smooth' })"
-      >
-        Order Now →
-      </button>
+      <button class="promo-stripe-btn" id="promo-stripe-btn">Order Now →</button>
     </div>
 
-    <!-- CHECKOUT -->
     <section class="checkout-section" id="order">
       <div class="checkout-layout">
-        <!-- Order tray / summary -->
         <div>
           <div class="order-tray">
             <div class="tray-title">
               <i class="hgi-stroke hgi-shopping-cart-01 icon-inline"></i>
               Your Tray
             </div>
-            <div id="order-empty" class="tray-empty">
-              Nothing here yet — go tap something from the board above!
-            </div>
+            <div id="order-empty" class="tray-empty">Nothing here yet — go tap something from the board above!</div>
             <div class="tray-items" id="order-items" style="display: none"></div>
             <div class="tray-total" id="order-total" style="display: none">
               <div class="tray-total-label">Total</div>
@@ -208,7 +186,6 @@
           </div>
         </div>
 
-        <!-- Form -->
         <div>
           <div id="order-form-wrap">
             <div class="form-head">
@@ -216,90 +193,70 @@
               <p class="form-sub">Fill this in to complete your order</p>
             </div>
 
-            <div class="form-row">
-              <div class="form-group">
-                <label for="fname">Your Name</label>
-                <input
-                  type="text"
-                  id="fname"
-                  placeholder="e.g. Amaka Obi"
-                  autocomplete="name"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label for="fphone">Phone Number</label>
-                <input
-                  type="tel"
-                  id="fphone"
-                  placeholder="e.g. 08012345678"
-                  autocomplete="tel"
-                  required
-                />
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="femail">Email Address</label>
-              <input
-                type="email"
-                id="femail"
-                placeholder="e.g. amaka@email.com"
-                autocomplete="email"
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="flocation">Delivery / Pickup Location</label>
-              <input
-                type="text"
-                id="flocation"
-                placeholder="e.g. Block C hostel, FUNAAB or Come pick up"
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="fnotes">Extra Notes (optional)</label>
-              <textarea
-                id="fnotes"
-                placeholder="e.g. Extra spicy, less oil, no onions..."
-              ></textarea>
-            </div>
-
-            <div class="form-group">
-              <label>How would you like to pay?</label>
-              <div class="pay-methods">
-                <div class="pay-option active" id="pay-online" onclick="selectPayment('online')">
-                  <div class="pay-option-icon">
-                    <i class="hgi-stroke hgi-credit-card icon-inline"></i>
-                  </div>
-                  <div>
-                    <div class="pay-option-label">Pay Online</div>
-                    <div class="pay-option-sub">Card / Transfer / USSD</div>
-                  </div>
+            <form id="order-form" novalidate>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="fname">Your Name</label>
+                  <input type="text" id="fname" placeholder="e.g. Amaka Obi" autocomplete="name" required />
+                  <span class="field-error" id="fname-error"></span>
                 </div>
-                <div class="pay-option" id="pay-whatsapp" onclick="selectPayment('whatsapp')">
-                  <div class="pay-option-icon">
-                    <i class="hgi-stroke hgi-whatsapp icon-inline"></i>
+                <div class="form-group">
+                  <label for="fphone">Phone Number</label>
+                  <input type="tel" id="fphone" placeholder="e.g. 08012345678" autocomplete="tel" required />
+                  <span class="field-error" id="fphone-error"></span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="femail">Email Address</label>
+                <input type="email" id="femail" placeholder="e.g. amaka@email.com" autocomplete="email" />
+                <span class="field-error" id="femail-error"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="flocation">Delivery / Pickup Location</label>
+                <input type="text" id="flocation" placeholder="e.g. Block C hostel, FUNAAB or Come pick up" />
+              </div>
+
+              <div class="form-group">
+                <label for="fnotes">Extra Notes (optional)</label>
+                <textarea id="fnotes" placeholder="e.g. Extra spicy, less oil, no onions..."></textarea>
+              </div>
+
+              <div class="form-group">
+                <label>How would you like to pay?</label>
+                <div class="pay-methods" role="radiogroup" aria-label="Payment method">
+                  <div class="pay-option active" id="pay-online" role="radio" aria-checked="true" tabindex="0">
+                    <div class="pay-option-icon">
+                      <i class="hgi-stroke hgi-credit-card icon-inline"></i>
+                    </div>
+                    <div>
+                      <div class="pay-option-label">Pay Online</div>
+                      <div class="pay-option-sub">Card / Transfer / USSD</div>
+                    </div>
                   </div>
-                  <div>
-                    <div class="pay-option-label">Pay on WhatsApp</div>
-                    <div class="pay-option-sub">Confirm &amp; pay via chat</div>
+                  <div class="pay-option" id="pay-whatsapp" role="radio" aria-checked="false" tabindex="-1">
+                    <div class="pay-option-icon">
+                      <i class="hgi-stroke hgi-whatsapp icon-inline"></i>
+                    </div>
+                    <div>
+                      <div class="pay-option-label">Pay on WhatsApp</div>
+                      <div class="pay-option-sub">Confirm &amp; pay via chat</div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <button class="btn-submit" id="submit-btn" onclick="placeOrder()">
-              <span class="btn-icon">
-                <i class="hgi-stroke hgi-credit-card icon-inline"></i>
-              </span>
-              <span class="btn-text">Pay Now — Secure Checkout</span>
-            </button>
-            <p class="pay-note">
-              Powered by <strong>Paystack</strong> — 100% secure. Cards, bank transfer &amp; USSD
-              accepted.
-            </p>
+              <button class="btn-submit" id="submit-btn" type="submit">
+                <span class="btn-icon">
+                  <i class="hgi-stroke hgi-credit-card icon-inline"></i>
+                </span>
+                <span class="btn-text">Pay Now — Secure Checkout</span>
+              </button>
+              <div class="spinner" id="submit-spinner" aria-hidden="true"></div>
+            </form>
+
+            <p class="pay-note">Powered by <strong>Paystack</strong> — 100% secure. Cards, bank transfer &amp; USSD accepted.</p>
           </div>
 
           <div class="success-msg" id="success-msg">
@@ -307,16 +264,12 @@
               <i class="hgi-stroke hgi-checkmark-circle-01 icon-success"></i>
             </div>
             <h3>Order placed!</h3>
-            <p id="success-detail">
-              Your order is confirmed and on its way to us. We'll reach out shortly.<br /><br />Questions?
-              Call us at <a href="tel:08070599262">08070599262</a>
-            </p>
+            <p id="success-detail">Your order is confirmed and on its way to us. We'll reach out shortly.<br /><br />Questions? Call us at <a href="tel:08070599262">08070599262</a></p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- FOOTER STRIP -->
     <footer class="site-footer" id="contact">
       <div class="footer-inner">
         <div>
@@ -324,43 +277,25 @@
           <div class="footer-tagline">Crave, Eat, Repeat · FUNAAB, Abeokuta</div>
         </div>
         <div class="footer-contact">
-          <p>
-            <i class="hgi-stroke hgi-location-01 icon-inline"></i>
-            Alabata Abeokuta, FUNAAB
-          </p>
-          <p>
-            <i class="hgi-stroke hgi-call icon-inline"></i>
-            <a href="tel:08070599262">08070599262</a>
-          </p>
-          <p>
-            <i class="hgi-stroke hgi-whatsapp icon-inline"></i>
-            <a href="https://wa.me/2348070599262" target="_blank" rel="noopener noreferrer"
-              >WhatsApp us</a
-            >
-          </p>
+          <p><i class="hgi-stroke hgi-location-01 icon-inline"></i> Alabata Abeokuta, FUNAAB</p>
+          <p><i class="hgi-stroke hgi-call icon-inline"></i> <a href="tel:08070599262">08070599262</a></p>
+          <p><i class="hgi-stroke hgi-whatsapp icon-inline"></i> <a href="https://wa.me/2348070599262" target="_blank" rel="noopener noreferrer">WhatsApp us</a></p>
         </div>
       </div>
       <div class="footer-copy">
-        <p>© 2026 <span class="footer-copy-accent">Teda Foods</span>. All rights reserved.</p>
+        <p>&copy; 2026 <span class="footer-copy-accent">Teda Foods</span>. All rights reserved.</p>
         <p>Made with passion in Abeokuta</p>
       </div>
     </footer>
 
-    <!-- TOAST -->
-    <div class="toast" id="toast" role="alert" aria-live="assertive"></div>
+    <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-    <!-- CART FLOAT -->
-    <div
-      class="cart-float"
-      id="cart-float"
-      onclick="document.getElementById('order').scrollIntoView({ behavior: 'smooth' })"
-      role="button"
-      tabindex="0"
-      aria-label="View your order"
-    >
+    <button class="cart-float" id="cart-float" onclick="document.getElementById('order').scrollIntoView({ behavior: 'smooth' })" aria-label="View your order">
       <span>View Tray</span>
       <div class="cart-badge" id="cart-count">0</div>
-    </div>
+    </button>
+
+    <div class="grain-overlay" aria-hidden="true"></div>
 
     <script src="app.js" defer></script>
   </body>
