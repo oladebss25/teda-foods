@@ -7,43 +7,169 @@
 // Menu dataset, divided by category
 const menuData = [
   {
-    category: "Rice Combos",
+    category: 'Rice Combos',
     items: [
-      { id: "1", name: "Jollof Rice + Chicken + Zobo (35cl)", displayName: "Jollof Rice + Chicken + Zobo", price: 3000, displayPrice: "₦3,000", image: "images/rice_combo.png" },
-      { id: "2", name: "Jollof Rice + Turkey + Zobo (35cl)", displayName: "Jollof Rice + Turkey + Zobo", price: 4000, displayPrice: "₦4,000", image: "images/rice_combo.png" },
-      { id: "3", name: "Asun Jollof + Chicken", displayName: "Asun Jollof + Chicken", price: 3500, displayPrice: "₦3,500", image: "images/rice_combo.png" },
-      { id: "4", name: "Asun Jollof + Turkey", displayName: "Asun Jollof + Turkey", price: 4500, displayPrice: "₦4,500", image: "images/rice_combo.png" },
-      { id: "5", name: "Fried Rice + Chicken", displayName: "Fried Rice + Chicken", price: 2800, displayPrice: "₦2,800", image: "images/fried_rice.png" },
-      { id: "6", name: "Fried Rice + Turkey", displayName: "Fried Rice + Turkey", price: 4000, displayPrice: "₦4,000", image: "images/fried_rice.png" },
-      { id: "7", name: "Ofada Rice Special (per pack)", displayName: "Ofada Rice Special", price: 2700, displayPrice: "₦2,700 / pack", image: "images/ofada_rice.png" }
-    ]
+      {
+        id: '1',
+        name: 'Jollof Rice + Chicken + Zobo (35cl)',
+        displayName: 'Jollof Rice + Chicken + Zobo',
+        price: 3000,
+        displayPrice: '₦3,000',
+        image: 'images/rice_combo.png',
+      },
+      {
+        id: '2',
+        name: 'Jollof Rice + Turkey + Zobo (35cl)',
+        displayName: 'Jollof Rice + Turkey + Zobo',
+        price: 4000,
+        displayPrice: '₦4,000',
+        image: 'images/rice_combo.png',
+      },
+      {
+        id: '3',
+        name: 'Asun Jollof + Chicken',
+        displayName: 'Asun Jollof + Chicken',
+        price: 3500,
+        displayPrice: '₦3,500',
+        image: 'images/rice_combo.png',
+      },
+      {
+        id: '4',
+        name: 'Asun Jollof + Turkey',
+        displayName: 'Asun Jollof + Turkey',
+        price: 4500,
+        displayPrice: '₦4,500',
+        image: 'images/rice_combo.png',
+      },
+      {
+        id: '5',
+        name: 'Fried Rice + Chicken',
+        displayName: 'Fried Rice + Chicken',
+        price: 2800,
+        displayPrice: '₦2,800',
+        image: 'images/fried_rice.png',
+      },
+      {
+        id: '6',
+        name: 'Fried Rice + Turkey',
+        displayName: 'Fried Rice + Turkey',
+        price: 4000,
+        displayPrice: '₦4,000',
+        image: 'images/fried_rice.png',
+      },
+      {
+        id: '7',
+        name: 'Ofada Rice Special (per pack)',
+        displayName: 'Ofada Rice Special',
+        price: 2700,
+        displayPrice: '₦2,700 / pack',
+        image: 'images/ofada_rice.png',
+      },
+    ],
   },
   {
-    category: "Pasta & Others",
+    category: 'Pasta & Others',
     items: [
-      { id: "8", name: "Stir Fry Pasta + Chicken", displayName: "Stir Fry Pasta + Chicken", price: 2500, displayPrice: "₦2,500", image: "images/pasta.png" },
-      { id: "9", name: "Stir Fry Pasta + Turkey", displayName: "Stir Fry Pasta + Turkey", price: 3500, displayPrice: "₦3,500", image: "images/pasta.png" },
-      { id: "10", name: "Ewa-agoyin (per pack, with proteins)", displayName: "Ewa-agoyin (with proteins)", price: 2500, displayPrice: "₦2,500 / pack", image: "images/ewa_agoyin.png" }
-    ]
+      {
+        id: '8',
+        name: 'Stir Fry Pasta + Chicken',
+        displayName: 'Stir Fry Pasta + Chicken',
+        price: 2500,
+        displayPrice: '₦2,500',
+        image: 'images/pasta.png',
+      },
+      {
+        id: '9',
+        name: 'Stir Fry Pasta + Turkey',
+        displayName: 'Stir Fry Pasta + Turkey',
+        price: 3500,
+        displayPrice: '₦3,500',
+        image: 'images/pasta.png',
+      },
+      {
+        id: '10',
+        name: 'Ewa-agoyin (per pack, with proteins)',
+        displayName: 'Ewa-agoyin (with proteins)',
+        price: 2500,
+        displayPrice: '₦2,500 / pack',
+        image: 'images/ewa_agoyin.png',
+      },
+    ],
   },
   {
-    category: "Sides & Extras",
+    category: 'Sides & Extras',
     items: [
-      { id: "11", name: "Plantain (small pack)", displayName: "Plantain (small pack)", price: 500, displayPrice: "₦500", image: "images/sides_extras.png" },
-      { id: "12", name: "Plantain (medium pack)", displayName: "Plantain (medium pack)", price: 700, displayPrice: "₦700", image: "images/sides_extras.png" },
-      { id: "13", name: "Coleslaw (small pack)", displayName: "Coleslaw (small pack)", price: 400, displayPrice: "₦400", image: "images/sides_extras.png" },
-      { id: "14", name: "Coleslaw (medium pack)", displayName: "Coleslaw (medium pack)", price: 700, displayPrice: "₦700", image: "images/sides_extras.png" },
-      { id: "15", name: "Fried Fish", displayName: "Fried Fish", price: 500, displayPrice: "₦500", image: "images/sides_extras.png" },
-      { id: "16", name: "Egg", displayName: "Egg", price: 300, displayPrice: "₦300", image: "images/sides_extras.png" }
-    ]
+      {
+        id: '11',
+        name: 'Plantain (small pack)',
+        displayName: 'Plantain (small pack)',
+        price: 500,
+        displayPrice: '₦500',
+        image: 'images/sides_extras.png',
+      },
+      {
+        id: '12',
+        name: 'Plantain (medium pack)',
+        displayName: 'Plantain (medium pack)',
+        price: 700,
+        displayPrice: '₦700',
+        image: 'images/sides_extras.png',
+      },
+      {
+        id: '13',
+        name: 'Coleslaw (small pack)',
+        displayName: 'Coleslaw (small pack)',
+        price: 400,
+        displayPrice: '₦400',
+        image: 'images/sides_extras.png',
+      },
+      {
+        id: '14',
+        name: 'Coleslaw (medium pack)',
+        displayName: 'Coleslaw (medium pack)',
+        price: 700,
+        displayPrice: '₦700',
+        image: 'images/sides_extras.png',
+      },
+      {
+        id: '15',
+        name: 'Fried Fish',
+        displayName: 'Fried Fish',
+        price: 500,
+        displayPrice: '₦500',
+        image: 'images/sides_extras.png',
+      },
+      {
+        id: '16',
+        name: 'Egg',
+        displayName: 'Egg',
+        price: 300,
+        displayPrice: '₦300',
+        image: 'images/sides_extras.png',
+      },
+    ],
   },
   {
-    category: "Drinks",
+    category: 'Drinks',
     items: [
-      { id: "17", name: "Teda's Zobo Drink (35cl)", displayName: "Teda's Zobo Drink (35cl)", price: 700, displayPrice: "₦700", image: "images/drinks.png" },
-      { id: "18", name: "Teda's Special Milkshake (50cl)", displayName: "Teda's Special Milkshake (50cl)", price: 2000, displayPrice: "₦2,000", image: "images/drinks.png" }
-    ]
-  }
+      {
+        id: '17',
+        name: "Teda's Zobo Drink (35cl)",
+        displayName: "Teda's Zobo Drink (35cl)",
+        price: 700,
+        displayPrice: '₦700',
+        image: 'images/drinks.png',
+      },
+      {
+        id: '18',
+        name: "Teda's Special Milkshake (50cl)",
+        displayName: "Teda's Special Milkshake (50cl)",
+        price: 2000,
+        displayPrice: '₦2,000',
+        image: 'images/drinks.png',
+      },
+    ],
+  },
 ];
 
 let cart = {};
@@ -51,11 +177,11 @@ let selectedPayment = 'online';
 
 // ─── Render menu categories and cards ──────────────────────────
 function renderMenu() {
-  const container = document.getElementById("menu-container");
+  const container = document.getElementById('menu-container');
   if (!container) return;
 
-  let html = "";
-  menuData.forEach(cat => {
+  let html = '';
+  menuData.forEach((cat) => {
     html += `
       <div class="cat-block">
         <div class="cat-header">
@@ -65,7 +191,7 @@ function renderMenu() {
         <div class="menu-grid">
     `;
 
-    cat.items.forEach(item => {
+    cat.items.forEach((item) => {
       html += `
         <div class="menu-card" data-id="${item.id}" data-name="${item.name}" data-price="${item.price}" onclick="toggleItem(this)">
           <div class="card-img">
@@ -110,11 +236,15 @@ function selectPayment(type) {
   if (type === 'online') {
     if (btnText) btnText.textContent = 'Pay Now — Secure Checkout';
     if (btnIcon) btnIcon.innerHTML = `<i class="hgi-stroke hgi-credit-card icon-inline"></i>`;
-    if (note) note.innerHTML = 'Powered by <strong>Paystack</strong> — 100% secure. Cards, bank transfer &amp; USSD accepted.';
+    if (note)
+      note.innerHTML =
+        'Powered by <strong>Paystack</strong> — 100% secure. Cards, bank transfer &amp; USSD accepted.';
   } else {
     if (btnText) btnText.textContent = 'Send Order via WhatsApp';
     if (btnIcon) btnIcon.innerHTML = `<i class="hgi-stroke hgi-whatsapp icon-inline"></i>`;
-    if (note) note.innerHTML = 'Your order will open in WhatsApp. We\'ll confirm &amp; get it ready fast. <span class="pay-note-success">Fast &amp; easy!</span>';
+    if (note)
+      note.innerHTML =
+        'Your order will open in WhatsApp. We\'ll confirm &amp; get it ready fast. <span class="pay-note-success">Fast &amp; easy!</span>';
   }
 }
 
@@ -130,7 +260,7 @@ function toggleItem(card) {
     cart[id] = {
       name: card.dataset.name,
       price: parseInt(card.dataset.price),
-      qty: 1
+      qty: 1,
     };
   }
   updateCart();
@@ -143,7 +273,10 @@ function changeQty(e, btn, delta) {
   const id = card.dataset.id;
   const qtyEl = card.querySelector('.qty-num');
   let qty = parseInt(qtyEl.textContent) + delta;
-  if (qty < 1) { toggleItem(card); return; }
+  if (qty < 1) {
+    toggleItem(card);
+    return;
+  }
   qtyEl.textContent = qty;
   if (cart[id]) cart[id].qty = qty;
   updateCart();
@@ -175,7 +308,7 @@ function updateCart() {
 
   let html = '';
   let total = 0;
-  ids.forEach(id => {
+  ids.forEach((id) => {
     const item = cart[id];
     const sub = item.price * item.qty;
     total += sub;
@@ -204,7 +337,7 @@ function showToast(msg) {
 function getOrderSummary() {
   let orderLines = '';
   let total = 0;
-  Object.values(cart).forEach(item => {
+  Object.values(cart).forEach((item) => {
     const sub = item.price * item.qty;
     total += sub;
     orderLines += `• ${item.name} x${item.qty} = ₦${sub.toLocaleString()}\n`;
@@ -258,8 +391,8 @@ function placeOrder() {
   if (selectedPayment === 'whatsapp') {
     sendWhatsApp(name, phone, location, notes);
     showSuccess(
-      'Your order has been sent to us via WhatsApp. We\'ll confirm and get it ready for you!<br><br>' +
-      'Questions? Call us at <a href="tel:08070599262">08070599262</a>'
+      "Your order has been sent to us via WhatsApp. We'll confirm and get it ready for you!<br><br>" +
+        'Questions? Call us at <a href="tel:08070599262">08070599262</a>',
     );
     return;
   }
@@ -282,24 +415,33 @@ function placeOrder() {
       custom_fields: [
         { display_name: 'Customer Name', variable_name: 'customer_name', value: name },
         { display_name: 'Phone', variable_name: 'phone', value: phone },
-        { display_name: 'Delivery Location', variable_name: 'location', value: location || 'Not specified' },
+        {
+          display_name: 'Delivery Location',
+          variable_name: 'location',
+          value: location || 'Not specified',
+        },
         { display_name: 'Order', variable_name: 'order', value: orderLines },
-        { display_name: 'Notes', variable_name: 'notes', value: notes || 'None' }
-      ]
+        { display_name: 'Notes', variable_name: 'notes', value: notes || 'None' },
+      ],
     },
     callback(response) {
       // Also ping WhatsApp so merchant is notified instantly
-      sendWhatsApp(name, phone, location, (notes ? notes + '\n' : '') + `PAID via Paystack. Ref: ${response.reference}`);
+      sendWhatsApp(
+        name,
+        phone,
+        location,
+        (notes ? notes + '\n' : '') + `PAID via Paystack. Ref: ${response.reference}`,
+      );
       showSuccess(
         `Payment successful! Your order is confirmed.<br><br>` +
-        `Reference: <strong>${response.reference}</strong><br><br>` +
-        `We've also notified our kitchen via WhatsApp. ` +
-        `Questions? Call <a href="tel:08070599262">08070599262</a>`
+          `Reference: <strong>${response.reference}</strong><br><br>` +
+          `We've also notified our kitchen via WhatsApp. ` +
+          `Questions? Call <a href="tel:08070599262">08070599262</a>`,
       );
     },
     onClose() {
       showToast('Payment window closed. Tap "Pay Now" whenever you\'re ready.');
-    }
+    },
   });
   handler.openIframe();
 }
@@ -329,14 +471,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const hamburger = document.getElementById('nav-hamburger');
   if (hamburger) {
-    hamburger.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleMenu(); }
+    hamburger.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleMenu();
+      }
     });
   }
 
   const cartFloat = document.getElementById('cart-float');
   if (cartFloat) {
-    cartFloat.addEventListener('keydown', e => {
+    cartFloat.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         document.getElementById('order').scrollIntoView({ behavior: 'smooth' });

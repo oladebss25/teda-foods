@@ -1,0 +1,19 @@
+{
+  "name": "teda-foods",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Teda Foods — online food ordering for FUNAAB, Abeokuta",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "prettier": "^3.4.0",
+    "vite": "^6.0.0"
+  }
+}
