@@ -66,7 +66,7 @@
         <li><a href="#contact">Contact</a></li>
       </ul>
       <button class="nav-cta" id="nav-cta">Order Now</button>
-      <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMenu()" aria-label="Open menu" type="button">
+      <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" type="button">
         <span></span><span></span><span></span>
       </button>
     </nav>
@@ -292,7 +292,7 @@
 
     <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-    <button class="cart-float" id="cart-float" onclick="document.getElementById('order').scrollIntoView({ behavior: 'smooth' })" aria-label="View your order">
+    <button class="cart-float" id="cart-float" aria-label="View your order">
       <span>View Tray</span>
       <div class="cart-badge" id="cart-count">0</div>
     </button>
@@ -309,6 +309,6 @@
         });
       }
     </script>
-    <script src="app.js" defer></script>
+    <script type="module" src="app.js" defer></script>
   </body>
 </html>

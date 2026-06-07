@@ -751,6 +751,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (hamburger) {
     hamburger.setAttribute('aria-haspopup', 'true');
     hamburger.setAttribute('aria-expanded', 'false');
+    hamburger.addEventListener('click', toggleMenu);
     hamburger.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
@@ -761,10 +762,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const cartFloat = document.getElementById('cart-float');
   if (cartFloat) {
+    cartFloat.addEventListener('click', scrollToOrder);
     cartFloat.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        document.getElementById('order').scrollIntoView({ behavior: 'smooth' });
+        scrollToOrder();
       }
     });
   }
