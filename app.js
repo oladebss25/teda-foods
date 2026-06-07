@@ -231,15 +231,23 @@ function renderMenu() {
       });
 
       const imgWrap = createEl('div', { class: 'card-img' });
-      const img = createEl('img', {
+      const picture = createEl('picture');
+      const webpPath = item.image.replace(/\.png$/, '.webp');
+      const source = createEl('source', {
+        srcset: webpPath,
+        type: 'image/webp',
+      });
+      const fallback = createEl('img', {
         src: item.image,
         alt: item.displayName,
         loading: 'lazy',
         width: '220',
         height: '148',
       });
-      img.addEventListener('error', () => { img.src = CONFIG.placeholderImage; });
-      imgWrap.appendChild(img);
+      fallback.addEventListener('error', () => { fallback.src = CONFIG.placeholderImage; });
+      picture.appendChild(source);
+      picture.appendChild(fallback);
+      imgWrap.appendChild(picture);
       card.appendChild(imgWrap);
 
       const body = createEl('div', { class: 'card-body' });

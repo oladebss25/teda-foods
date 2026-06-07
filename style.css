@@ -141,11 +141,37 @@ a:focus-visible,
 
 /* ── Ambient glow ──────────────────────── */
 .glow-orb {
-  position: absolute;
+  position: fixed;
   border-radius: 50%;
   pointer-events: none;
-  filter: blur(80px);
-  opacity: 0.12;
+  filter: blur(100px);
+  opacity: 0.1;
+  z-index: 1;
+}
+
+.glow-orb--hero {
+  top: -120px;
+  left: -120px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, oklch(72% 0.16 55), transparent);
+}
+
+.glow-orb--board {
+  bottom: -80px;
+  right: -80px;
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, oklch(68% 0.18 145 / 0.5), transparent);
+}
+
+.glow-orb--footer {
+  bottom: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 500px;
+  height: 300px;
+  background: radial-gradient(ellipse, oklch(66% 0.19 42 / 0.15), transparent);
 }
 
 /* ── NAV ───────────────────────────────── */
@@ -1652,5 +1678,78 @@ a:focus-visible,
 
   .site-nav {
     padding: 0 12px;
+  }
+}
+
+/* ── LIGHT MODE ─────────────────────────── */
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-canvas: oklch(96% 0.005 60);
+    --color-canvas-mid: oklch(93% 0.008 60);
+    --color-canvas-raised: oklch(100% 0 0);
+    --color-canvas-light: oklch(96% 0.008 60);
+    --color-accent: oklch(55% 0.22 35);
+    --color-accent-glow: oklch(58% 0.2 38);
+    --color-accent-dim: oklch(55% 0.22 35 / 0.1);
+    --color-accent-border: oklch(55% 0.22 35 / 0.25);
+    --color-accent-ring: oklch(55% 0.22 35 / 0.18);
+    --color-text: oklch(15% 0.015 30);
+    --color-text-muted: oklch(45% 0.015 30);
+    --color-text-faint: oklch(65% 0.01 30);
+    --color-text-inverse: oklch(96% 0.008 60);
+    --color-border: oklch(80% 0.01 30);
+    --color-border-subtle: oklch(88% 0.008 30);
+    --color-nav-bg: oklch(96% 0.005 60 / 0.85);
+    --color-nav-border: oklch(0% 0 0 / 0.08);
+    --color-nav-highlight: oklch(100% 0 0 / 0.5);
+    --color-nav-overlay: oklch(96% 0.005 60 / 0.97);
+    --color-mask-bg: oklch(0% 0 0 / 0.4);
+    --color-ticker-dot: oklch(100% 0 0 / 0.3);
+    --color-promo-sub: oklch(100% 0 0 / 0.7);
+    --color-selected-bg: oklch(88% 0.025 35);
+    --color-label: oklch(30% 0.015 30);
+    --color-input-bg: oklch(100% 0 0);
+    --color-input-focus: oklch(98% 0 0);
+    --color-input-border: oklch(75% 0.01 30);
+    --color-placeholder: oklch(60% 0.01 30);
+    --color-active-tint: oklch(85% 0.04 35);
+    --shadow-card: 0 2px 12px oklch(0% 0 0 / 0.08);
+    --shadow-accent: 0 8px 32px oklch(55% 0.22 35 / 0.15);
+    --shadow-float: 0 12px 40px oklch(55% 0.22 35 / 0.25);
+    --shadow-nav-color: oklch(0% 0 0 / 0.06);
+  }
+
+  .ticker {
+    background: var(--color-accent);
+  }
+
+  .ticker-item {
+    color: var(--color-text-inverse);
+  }
+
+  .promo-stripe {
+    background: var(--color-accent);
+  }
+
+  .promo-stripe-text,
+  .promo-stripe-btn {
+    color: var(--color-text-inverse);
+  }
+
+  .promo-stripe-btn {
+    background: var(--color-text-inverse);
+    color: var(--color-accent);
+  }
+
+  .glow-orb--hero {
+    opacity: 0.06;
+  }
+
+  .glow-orb--board {
+    opacity: 0.04;
+  }
+
+  .glow-orb--footer {
+    opacity: 0.05;
   }
 }

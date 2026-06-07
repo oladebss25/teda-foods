@@ -1,0 +1,21 @@
+{
+  "name": "Teda Foods",
+  "short_name": "Teda Foods",
+  "description": "Fresh jollof rice, fried rice, pasta & more — made daily at FUNAAB, Abeokuta.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f0b0a",
+  "theme_color": "#c94f2b",
+  "icons": [
+    {
+      "src": "images/teda_foods_logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "images/teda_foods_logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

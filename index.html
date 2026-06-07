@@ -47,6 +47,8 @@
     <link rel="stylesheet" href="https://cdn.hugeicons.com/font/hgi-stroke-rounded.css" />
     <script src="https://js.paystack.co/v1/inline.js" defer></script>
     <link rel="icon" type="image/png" href="images/teda_foods_logo.png" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#c94f2b" />
     <link rel="stylesheet" href="style.css" />
   </head>
 
@@ -296,7 +298,17 @@
     </button>
 
     <div class="grain-overlay" aria-hidden="true"></div>
+    <div class="glow-orb glow-orb--hero" aria-hidden="true"></div>
+    <div class="glow-orb glow-orb--board" aria-hidden="true"></div>
+    <div class="glow-orb glow-orb--footer" aria-hidden="true"></div>
 
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('sw.js');
+        });
+      }
+    </script>
     <script src="app.js" defer></script>
   </body>
 </html>
