@@ -1,9 +1,17 @@
 import { useState, useCallback } from 'react';
 
-export function useCart() {
-  const [cart, setCart] = useState({});
+export interface CartItem {
+  name: string;
+  price: number;
+  qty: number;
+}
 
-  const toggleItem = useCallback((id, name, price) => {
+export type Cart = Record<string, CartItem>;
+
+export function useCart() {
+  const [cart, setCart] = useState<Cart>({});
+
+  const toggleItem = useCallback((id: string, name: string, price: number) => {
     setCart((prev) => {
       if (prev[id]) {
         const next = { ...prev };
@@ -14,7 +22,7 @@ export function useCart() {
     });
   }, []);
 
-  const changeQty = useCallback((id, delta) => {
+  const changeQty = useCallback((id: string, delta: number) => {
     setCart((prev) => {
       if (!prev[id]) return prev;
       const newQty = prev[id].qty + delta;
@@ -28,14 +36,14 @@ export function useCart() {
   }, []);
 
   const getTotal = useCallback(() => {
-    return Object.values(cart).reduce((sum, item) => sum + item.price * item.qty, 0);
+    return Object.values(cart).reduce((sum: number, item: CartItem) => sum + item.price * item.qty, 0);
   }, [cart]);
 
   const getCount = useCallback(() => Object.keys(cart).length, [cart]);
 
   const getSummary = useCallback(() => {
     let lines = '';
-    Object.values(cart).forEach((item) => {
+    Object.values(cart).forEach((item: CartItem) => {
       const sub = item.price * item.qty;
       lines += '• ' + item.name + ' x' + item.qty + ' = ₦' + sub.toLocaleString() + '\n';
     });

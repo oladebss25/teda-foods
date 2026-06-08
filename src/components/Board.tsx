@@ -1,12 +1,21 @@
 import { useCallback } from 'react';
 import { CONFIG } from '../data/config';
+import type { MenuCategory } from '../data/menu';
+import type { Cart } from '../hooks/useCart';
 
-export default function Board({ cart, onToggle, onChangeQty, menuData }) {
-  const handleToggle = useCallback((id, name, price) => {
+interface BoardProps {
+  cart: Cart;
+  onToggle: (id: string, name: string, price: number) => void;
+  onChangeQty: (id: string, delta: number) => void;
+  menuData: MenuCategory[];
+}
+
+export default function Board({ cart, onToggle, onChangeQty, menuData }: BoardProps) {
+  const handleToggle = useCallback((id: string, name: string, price: number) => {
     onToggle(id, name, price);
   }, [onToggle]);
 
-  const handleQty = useCallback((e, id, delta) => {
+  const handleQty = useCallback((e: React.MouseEvent, id: string, delta: number) => {
     e.stopPropagation();
     onChangeQty(id, delta);
   }, [onChangeQty]);
@@ -45,6 +54,7 @@ export default function Board({ cart, onToggle, onChangeQty, menuData }) {
                   }}
                 >
                   <div className="card-img">
+                    <div className="skeleton" />
                     <picture>
                       <source srcSet={item.image.replace(/\.png$/, '.webp')} type="image/webp" />
                       <img
@@ -53,7 +63,8 @@ export default function Board({ cart, onToggle, onChangeQty, menuData }) {
                         loading="lazy"
                         width="220"
                         height="148"
-                        onError={(e) => { e.target.src = CONFIG.placeholderImage; }}
+                        onError={(e) => { (e.target as HTMLImageElement).src = CONFIG.placeholderImage; }}
+                        onLoad={(e) => { (e.target as HTMLImageElement).closest('.card-img')?.classList.add('loaded'); }}
                       />
                     </picture>
                   </div>

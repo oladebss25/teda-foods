@@ -1,4 +1,9 @@
-export default function CartFloat({ count, onOrderClick }) {
+interface CartFloatProps {
+  count: number;
+  onOrderClick: () => void;
+}
+
+export default function CartFloat({ count, onOrderClick }: CartFloatProps) {
   return (
     <button
       className={`cart-float${count > 0 ? ' visible' : ''}`}

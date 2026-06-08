@@ -1,4 +1,18 @@
-export const menuData = [
+export interface MenuItem {
+  id: string;
+  name: string;
+  displayName: string;
+  price: number;
+  displayPrice: string;
+  image: string;
+}
+
+export interface MenuCategory {
+  category: string;
+  items: MenuItem[];
+}
+
+export const menuData: MenuCategory[] = [
   {
     category: 'Rice Combos',
     items: [

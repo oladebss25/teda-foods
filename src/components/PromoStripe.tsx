@@ -1,4 +1,8 @@
-export default function PromoStripe({ onOrderClick }) {
+interface PromoStripeProps {
+  onOrderClick: () => void;
+}
+
+export default function PromoStripe({ onOrderClick }: PromoStripeProps) {
   return (
     <div className="promo-stripe">
       <div>

@@ -17,11 +17,11 @@ import GlowOrbs from './components/GlowOrbs';
 
 export default function App() {
   const { cart, toggleItem, changeQty, getTotal, getSummary, clearCart } = useCart();
-  const [toastMsg, setToastMsg] = useState(null);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
   const revealRef = useReveal();
 
-  let toastTimer = useRef(null);
-  const showToast = useCallback((msg) => {
+  const toastTimer = useRef<ReturnType<typeof setTimeout>>(null);
+  const showToast = useCallback((msg: string) => {
     setToastMsg(msg);
     if (toastTimer.current) clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setToastMsg(null), 2800);
@@ -40,10 +40,10 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const handleTab = (e) => {
+    const handleTab = (e: KeyboardEvent) => {
       const links = document.getElementById('nav-links');
       if (!links || !links.classList.contains('active')) return;
-      const focusable = links.querySelectorAll('a[href], button, [tabindex]:not([tabindex="-1"])');
+      const focusable = links.querySelectorAll<HTMLElement>('a[href], button, [tabindex]:not([tabindex="-1"])');
       if (focusable.length === 0) return;
       const first = focusable[0];
       const last = focusable[focusable.length - 1];

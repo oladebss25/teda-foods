@@ -1,55 +1,69 @@
 import { useState, useRef, useCallback } from 'react';
 import { CONFIG } from '../data/config';
+import type { Cart } from '../hooks/useCart';
 
-export default function Checkout({ cart, getTotal, getSummary, clearCart, showToast }) {
+interface CheckoutProps {
+  cart: Cart;
+  getTotal: () => number;
+  getSummary: () => string;
+  clearCart: () => void;
+  showToast: (msg: string) => void;
+}
+
+const fields: Record<string, { test: (v: string) => boolean; msg: string }> = {
+  fname: { test: (v) => v.trim().length >= 2, msg: 'Please enter your name (at least 2 characters).' },
+  fphone: { test: (v) => /^0\d{10}$/.test(v.trim()), msg: 'Enter a valid Nigerian phone number (e.g. 08012345678).' },
+  femail: { test: (v) => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()), msg: 'Enter a valid email address.' },
+};
+
+function validateField(id: string) {
+  const el = document.getElementById(id) as HTMLInputElement | null;
+  if (!el) return true;
+  const errorEl = document.getElementById(id + '-error');
+  const group = el.closest('.form-group');
+  const rule = fields[id];
+  let valid = true;
+  if (rule) {
+    valid = rule.test(el.value);
+    if (!valid && el.value.trim() === '' && !el.hasAttribute('required')) {
+      valid = true;
+    }
+  } else {
+    valid = el.value.trim().length > 0 || !el.hasAttribute('required');
+  }
+  if (!valid) {
+    if (errorEl) { errorEl.textContent = rule ? rule.msg : 'This field is required.'; errorEl.classList.add('visible'); }
+    if (group) group.classList.add('has-error');
+  } else {
+    if (errorEl) { errorEl.textContent = ''; errorEl.classList.remove('visible'); }
+    if (group) group.classList.remove('has-error');
+  }
+  return valid;
+}
+
+function validateAll() {
+  const ids = ['fname', 'fphone', 'femail'];
+  let allValid = true;
+  for (const id of ids) {
+    const ok = validateField(id);
+    if (!ok) {
+      allValid = false;
+      const el = document.getElementById(id);
+      if (el) { el.focus(); break; }
+    }
+  }
+  return allValid;
+}
+
+export default function Checkout({ cart, getTotal, getSummary, clearCart, showToast }: CheckoutProps) {
   const [paymentMethod, setPaymentMethod] = useState('online');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [successHtml, setSuccessHtml] = useState('');
-  const formRef = useRef(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const lastSubmitRef = useRef(0);
 
-  const fields = {
-    fname: { test: (v) => v.trim().length >= 2, msg: 'Please enter your name (at least 2 characters).' },
-    fphone: { test: (v) => /^0\d{10}$/.test(v.trim()), msg: 'Enter a valid Nigerian phone number (e.g. 08012345678).' },
-    femail: { test: (v) => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()), msg: 'Enter a valid email address.' },
-  };
-
-  const validateField = useCallback((id) => {
-    const el = document.getElementById(id);
-    if (!el) return true;
-    const errorEl = document.getElementById(id + '-error');
-    const group = el.closest('.form-group');
-    const rule = fields[id];
-    let valid = true;
-    if (rule) {
-      valid = rule.test(el.value);
-    } else {
-      valid = el.value.trim().length > 0 || !el.hasAttribute('required');
-    }
-    if (!valid) {
-      if (errorEl) { errorEl.textContent = rule ? rule.msg : 'This field is required.'; errorEl.classList.add('visible'); }
-      if (group) group.classList.add('has-error');
-    } else {
-      if (errorEl) { errorEl.textContent = ''; errorEl.classList.remove('visible'); }
-      if (group) group.classList.remove('has-error');
-    }
-    return valid;
-  }, []);
-
-  const validateAll = useCallback(() => {
-    const ids = ['fname', 'fphone', 'femail'];
-    let allValid = true;
-    let firstInvalid = null;
-    ids.forEach((id) => {
-      const ok = validateField(id);
-      if (!ok) { allValid = false; if (!firstInvalid) firstInvalid = document.getElementById(id); }
-    });
-    if (firstInvalid) firstInvalid.focus();
-    return allValid;
-  }, [validateField]);
-
-  const sendWhatsApp = useCallback((name, phone, location, notes) => {
+  const sendWhatsApp = useCallback((name: string, phone: string, location: string, notes: string) => {
     const orderLines = getSummary();
     const total = getTotal();
     const msg =
@@ -57,8 +71,9 @@ export default function Checkout({ cart, getTotal, getSummary, clearCart, showTo
     window.open('https://wa.me/' + CONFIG.phoneInternational + '?text=' + encodeURIComponent(msg), '_blank');
   }, [getSummary, getTotal]);
 
-  const showSuccess = useCallback((html) => {
-    document.getElementById('order-form-wrap').style.display = 'none';
+  const showSuccess = useCallback((html: string) => {
+    const wrap = document.getElementById('order-form-wrap');
+    if (wrap) wrap.style.display = 'none';
     const sm = document.getElementById('success-msg');
     if (sm) {
       sm.style.display = 'block';
@@ -71,18 +86,20 @@ export default function Checkout({ cart, getTotal, getSummary, clearCart, showTo
     setTimeout(() => document.getElementById('order')?.scrollIntoView({ behavior: 'smooth' }), 100);
   }, [clearCart]);
 
-  const handleSubmit = useCallback(async (e) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
     const now = Date.now();
     if (now - lastSubmitRef.current < 3000) { showToast('Please wait a moment before trying again.'); return; }
     lastSubmitRef.current = now;
 
-    const name = document.getElementById('fname')?.value.trim() || '';
-    const phone = document.getElementById('fphone')?.value.trim() || '';
-    const email = document.getElementById('femail')?.value.trim() || '';
-    const location = document.getElementById('flocation')?.value.trim() || '';
-    const notesRaw = document.getElementById('fnotes')?.value.trim() || '';
+    const getName = (id: string) => (document.getElementById(id) as HTMLInputElement | null)?.value.trim() || '';
+
+    const name = getName('fname');
+    const phone = getName('fphone');
+    const email = getName('femail');
+    const location = getName('flocation');
+    const notesRaw = getName('fnotes');
     const notes = notesRaw.slice(0, 500);
 
     if (!validateAll()) return;
@@ -91,7 +108,7 @@ export default function Checkout({ cart, getTotal, getSummary, clearCart, showTo
     if (count === 0) { showToast('Please select at least one item from the board above.'); return; }
 
     setIsSubmitting(true);
-    const btn = document.getElementById('submit-btn');
+    const btn = document.getElementById('submit-btn') as HTMLButtonElement | null;
     const spinner = document.getElementById('submit-spinner');
     if (btn) { btn.disabled = true; btn.classList.add('loading'); }
     if (spinner) spinner.classList.add('visible');
@@ -123,7 +140,7 @@ export default function Checkout({ cart, getTotal, getSummary, clearCart, showTo
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, phone, email, location, notes, orderLines, total, paymentRef: ref, paymentMethod: 'online' }),
       });
-      const data = await response.json();
+      const data = await response.json() as { paystackKey?: string; reference?: string; message?: string };
 
       if (data.paystackKey) {
         const handler = window.PaystackPop.setup({
@@ -141,17 +158,17 @@ export default function Checkout({ cart, getTotal, getSummary, clearCart, showTo
               { display_name: 'Notes', variable_name: 'notes', value: notes || 'None' },
             ],
           },
-          callback(response) {
+          callback(_response: Record<string, unknown>) {
             fetch(CONFIG.apiBase + '/api/orders/confirm', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ reference: response.reference }),
+              body: JSON.stringify({ reference: data.reference || ref }),
             }).catch(() => {});
-            sendWhatsApp(name, phone, location, (notes ? notes + '\n' : '') + 'PAID via Paystack. Ref: ' + response.reference);
+            sendWhatsApp(name, phone, location, (notes ? notes + '\n' : '') + 'PAID via Paystack. Ref: ' + (data.reference || ref));
             setIsSubmitting(false);
             if (btn) { btn.disabled = false; btn.classList.remove('loading'); }
             if (spinner) spinner.classList.remove('visible');
-            showSuccess('Payment successful! Your order is confirmed.<br><br>Reference: <strong>' + response.reference + '</strong><br><br>We\'ve also notified our kitchen via WhatsApp. Questions? Call <a href="tel:' + CONFIG.phone + '">' + CONFIG.phone + '</a>');
+            showSuccess('Payment successful! Your order is confirmed.<br><br>Reference: <strong>' + (data.reference || ref) + '</strong><br><br>We\'ve also notified our kitchen via WhatsApp. Questions? Call <a href="tel:' + CONFIG.phone + '">' + CONFIG.phone + '</a>');
           },
           onClose() {
             setIsSubmitting(false);
@@ -169,21 +186,29 @@ export default function Checkout({ cart, getTotal, getSummary, clearCart, showTo
         if (data.message) showSuccess(data.message);
         else showSuccess("Your order has been sent to us! We'll confirm shortly.");
       }
-    } catch (err) {
+    } catch (_err) {
       sendWhatsApp(name, phone, location, notes);
       setIsSubmitting(false);
       if (btn) { btn.disabled = false; btn.classList.remove('loading'); }
       if (spinner) spinner.classList.remove('visible');
       showSuccess("Your order has been sent to us via WhatsApp. We'll confirm and get it ready for you!");
     }
-  }, [cart, getTotal, getSummary, paymentMethod, isSubmitting, validateAll, showToast, sendWhatsApp, showSuccess]);
+  }, [cart, getTotal, getSummary, paymentMethod, isSubmitting, showToast, sendWhatsApp, showSuccess]);
 
-  const selectPayment = useCallback((type) => {
+  const selectPayment = useCallback((type: string) => {
     setPaymentMethod(type);
     const online = document.getElementById('pay-online');
     const whatsapp = document.getElementById('pay-whatsapp');
-    if (online) { online.classList.toggle('active', type === 'online'); online.setAttribute('aria-checked', type === 'online'); }
-    if (whatsapp) { whatsapp.classList.toggle('active', type === 'whatsapp'); whatsapp.setAttribute('aria-checked', type === 'whatsapp'); }
+    if (online) { online.classList.toggle('active', type === 'online'); online.setAttribute('aria-checked', String(type === 'online')); }
+    if (whatsapp) { whatsapp.classList.toggle('active', type === 'whatsapp'); whatsapp.setAttribute('aria-checked', String(type === 'whatsapp')); }
+    const emailEl = document.getElementById('femail') as HTMLInputElement | null;
+    if (emailEl) {
+      if (type === 'online') {
+        emailEl.setAttribute('required', '');
+      } else {
+        emailEl.removeAttribute('required');
+      }
+    }
     const btn = document.getElementById('submit-btn');
     const btnText = btn?.querySelector('.btn-text');
     const btnIcon = btn?.querySelector('.btn-icon');
@@ -262,7 +287,7 @@ export default function Checkout({ cart, getTotal, getSummary, clearCart, showTo
 
               <div className="form-group">
                 <label htmlFor="femail">Email Address</label>
-                <input type="email" id="femail" placeholder="e.g. amaka@email.com" autoComplete="email" onBlur={() => validateField('femail')} />
+                <input type="email" id="femail" placeholder="e.g. amaka@email.com" autoComplete="email" required onBlur={() => validateField('femail')} />
                 <span className="field-error" id="femail-error" />
               </div>
 

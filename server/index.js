@@ -5,6 +5,12 @@ import { fileURLToPath } from 'url';
 import Database from 'better-sqlite3';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const logger = {
+  info: (msg, data) => console.log(JSON.stringify({ level: 'info', msg, data, time: new Date().toISOString() })),
+  error: (msg, data) => console.error(JSON.stringify({ level: 'error', msg, data, time: new Date().toISOString() })),
+};
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -47,7 +53,7 @@ app.post('/api/orders', (req, res) => {
       message: 'Order created. Proceed to payment.',
     });
   } catch (err) {
-    console.error('Order creation error:', err);
+    logger.error('Order creation error', { error: err.message, body: req.body });
     res.status(500).json({ error: 'Failed to create order' });
   }
 });
@@ -59,6 +65,7 @@ app.post('/api/orders/confirm', (req, res) => {
     stmt.run('paid', reference);
     res.json({ message: 'Payment confirmed' });
   } catch (err) {
+    logger.error('Payment confirm error', { error: err.message });
     res.status(500).json({ error: 'Failed to confirm payment' });
   }
 });

@@ -1,6 +1,10 @@
 import { useEffect } from 'react';
 
-export default function Toast({ message }) {
+interface ToastProps {
+  message: string | null;
+}
+
+export default function Toast({ message }: ToastProps) {
   useEffect(() => {
     if (!message) return;
     const el = document.getElementById('toast');

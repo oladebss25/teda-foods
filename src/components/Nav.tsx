@@ -1,8 +1,12 @@
 import { useRef, useCallback, useEffect } from 'react';
 
-export default function Nav({ onOrderClick }) {
-  const linksRef = useRef(null);
-  const hamburgerRef = useRef(null);
+interface NavProps {
+  onOrderClick: () => void;
+}
+
+export default function Nav({ onOrderClick }: NavProps) {
+  const linksRef = useRef<HTMLUListElement>(null);
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
 
   const toggleMenu = useCallback(() => {
     const links = linksRef.current;
@@ -14,7 +18,7 @@ export default function Nav({ onOrderClick }) {
     hamburger.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
     hamburger.setAttribute('aria-expanded', String(isOpen));
 
-    let mask = document.querySelector('.nav-mask');
+    let mask = document.querySelector('.nav-mask') as HTMLElement | null;
     if (!mask) {
       mask = document.createElement('div');
       mask.className = 'nav-mask';
