@@ -161,11 +161,6 @@ export default function Checkout({ cart, getTotal, getSummary, clearCart, showTo
             ],
           },
           callback(_response: Record<string, unknown>) {
-            fetch(CONFIG.apiBase + '/api/orders/confirm', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ reference: data.reference || ref }),
-            }).catch(() => {});
             sendWhatsApp(name, phone, location, (notes ? notes + '\n' : '') + 'PAID via Paystack. Ref: ' + (data.reference || ref));
             setIsSubmitting(false);
             if (btn) { btn.disabled = false; btn.classList.remove('loading'); }

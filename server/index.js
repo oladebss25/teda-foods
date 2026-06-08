@@ -84,7 +84,7 @@ app.post('/api/orders', (req, res) => {
     }
 
     const { name, phone, email, location, notes, orderLines, total, paymentRef, paymentMethod } = req.body;
-    const stmt = db.prepare(`INSERT INTO orders (name, phone, email, location, notes, order_lines, total, payment_ref, payment_method) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`);
+    const stmt = db.prepare('INSERT INTO orders (name, phone, email, location, notes, order_lines, total, payment_ref, payment_method) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
     const result = stmt.run(name, phone, email || null, location || null, notes || null, orderLines, total, paymentRef, paymentMethod);
 
     if (paymentMethod === 'whatsapp') {
@@ -113,5 +113,5 @@ app.get('*', (_req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Teda Foods API server running on http://localhost:${PORT}`);
+    logger.info('Server started', { port: PORT });
 });
