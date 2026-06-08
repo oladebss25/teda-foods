@@ -1,8 +1,11 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import crypto from 'crypto';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import Database from 'better-sqlite3';
+import { validateOrderInput } from './validation.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -11,11 +14,16 @@ const logger = {
   error: (msg, data) => console.error(JSON.stringify({ level: 'error', msg, data, time: new Date().toISOString() })),
 };
 
+const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
+if (!PAYSTACK_SECRET_KEY) {
+  logger.error('FATAL: PAYSTACK_SECRET_KEY is not set');
+  process.exit(1);
+}
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(cors());
-app.use(express.json());
 
 const db = new Database(path.join(__dirname, 'orders.db'));
 db.exec(`CREATE TABLE IF NOT EXISTS orders (
@@ -33,10 +41,33 @@ db.exec(`CREATE TABLE IF NOT EXISTS orders (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 )`);
 
-const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY || 'sk_live_xxxxxxxxxxxx';
+app.post('/api/paystack-webhook', express.raw({ type: 'application/json' }), (req, res) => {
+  const hash = crypto.createHmac('sha512', PAYSTACK_SECRET_KEY).update(req.body).digest('hex');
+  if (hash !== req.headers['x-paystack-signature']) {
+    logger.error('Invalid Paystack webhook signature');
+    return res.status(401).json({ error: 'Invalid signature' });
+  }
+
+  const event = JSON.parse(req.body.toString());
+  if (event.event === 'charge.success') {
+    const reference = event.data.reference;
+    const stmt = db.prepare('UPDATE orders SET status = ? WHERE payment_ref = ?');
+    stmt.run('paid', reference);
+    logger.info('Payment confirmed via webhook', { reference });
+  }
+
+  res.sendStatus(200);
+});
+
+app.use(express.json());
 
 app.post('/api/orders', (req, res) => {
   try {
+    const errors = validateOrderInput(req.body);
+    if (errors.length > 0) {
+      return res.status(400).json({ errors });
+    }
+
     const { name, phone, email, location, notes, orderLines, total, paymentRef, paymentMethod } = req.body;
     const stmt = db.prepare(`INSERT INTO orders (name, phone, email, location, notes, order_lines, total, payment_ref, payment_method) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`);
     const result = stmt.run(name, phone, email || null, location || null, notes || null, orderLines, total, paymentRef, paymentMethod);
@@ -45,28 +76,15 @@ app.post('/api/orders', (req, res) => {
       return res.json({ message: 'Your order has been received. We will contact you on WhatsApp shortly.', orderId: result.lastInsertRowid });
     }
 
-    const paystackPublicKey = process.env.VITE_PAYSTACK_PUBLIC_KEY || 'pk_live_2ac524dfe7371a9ad3ea0c3befb355d7e464b3d1';
     res.json({
       orderId: result.lastInsertRowid,
       reference: paymentRef,
-      paystackKey: paystackPublicKey,
+      paystackKey: process.env.PAYSTACK_PUBLIC_KEY,
       message: 'Order created. Proceed to payment.',
     });
   } catch (err) {
     logger.error('Order creation error', { error: err.message, body: req.body });
     res.status(500).json({ error: 'Failed to create order' });
-  }
-});
-
-app.post('/api/orders/confirm', (req, res) => {
-  try {
-    const { reference } = req.body;
-    const stmt = db.prepare('UPDATE orders SET status = ? WHERE payment_ref = ?');
-    stmt.run('paid', reference);
-    res.json({ message: 'Payment confirmed' });
-  } catch (err) {
-    logger.error('Payment confirm error', { error: err.message });
-    res.status(500).json({ error: 'Failed to confirm payment' });
   }
 });
 
