@@ -1,4 +1,4 @@
-const CACHE = 'teda-foods-v2';
+const CACHE = 'teda-foods-v3';
 
 self.addEventListener('install', () => self.skipWaiting());
 
@@ -14,21 +14,16 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
+  if (e.request.url.includes('/api/')) return;
   if (e.request.method !== 'GET') return;
 
   e.respondWith(
-    caches.match(e.request).then((cached) => {
-      if (cached) return cached;
-
-      return fetch(e.request)
-        .then((response) => {
-          if (response && response.status === 200) {
-            const clone = response.clone();
-            caches.open(CACHE).then((cache) => cache.put(e.request, clone));
-          }
-          return response;
-        })
-        .catch(() => new Response('Offline', { status: 503 }));
-    }),
+    fetch(e.request)
+      .then((response) => {
+        const clone = response.clone();
+        caches.open(CACHE).then((cache) => cache.put(e.request, clone));
+        return response;
+      })
+      .catch(() => caches.match(e.request).then((cached) => cached || new Response('Offline', { status: 503 }))),
   );
 });

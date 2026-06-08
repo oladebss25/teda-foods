@@ -1,6 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import crypto from 'crypto';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -23,7 +25,19 @@ if (!PAYSTACK_SECRET_KEY) {
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors());
+const allowedOrigins = process.env.NODE_ENV === 'production'
+  ? ['https://tedafoods.com.ng']
+  : ['http://localhost:5173', 'http://localhost:3001'];
+
+app.use(cors({ origin: allowedOrigins, methods: ['GET', 'POST'] }));
+app.use(helmet());
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: { error: 'Too many requests, please try again later.' },
+});
+app.use('/api/', apiLimiter);
 
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, '..', 'data', 'orders.db');
 const db = new Database(DB_PATH);

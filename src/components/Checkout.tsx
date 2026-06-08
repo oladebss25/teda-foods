@@ -63,11 +63,13 @@ export default function Checkout({ cart, getTotal, getSummary, clearCart, showTo
   const formRef = useRef<HTMLFormElement>(null);
   const lastSubmitRef = useRef(0);
 
+  const sanitize = (str: string) => str.replace(/[<>]/g, '').trim();
+
   const sendWhatsApp = useCallback((name: string, phone: string, location: string, notes: string) => {
     const orderLines = getSummary();
     const total = getTotal();
     const msg =
-      '*New Order — Teda Foods*\n\n*Name:* ' + name + '\n*Phone:* ' + phone + '\n*Deliver to:* ' + (location || 'Not specified') + '\n\n*Order:*\n' + orderLines + '\n*Total:* ₦' + total.toLocaleString() + '\n\n' + (notes ? '*Notes:* ' + notes + '\n\n' : '') + 'Ordered via Teda Foods website';
+      '*New Order — Teda Foods*\n\n*Name:* ' + sanitize(name) + '\n*Phone:* ' + sanitize(phone) + '\n*Deliver to:* ' + sanitize(location || 'Not specified') + '\n\n*Order:*\n' + sanitize(orderLines) + '\n*Total:* ₦' + total.toLocaleString() + '\n\n' + (notes ? '*Notes:* ' + sanitize(notes) + '\n\n' : '') + 'Ordered via Teda Foods website';
     window.open('https://wa.me/' + CONFIG.phoneInternational + '?text=' + encodeURIComponent(msg), '_blank');
   }, [getSummary, getTotal]);
 
