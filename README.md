@@ -36,6 +36,7 @@ npm run format
 | `PAYSTACK_SECRET_KEY`      | Paystack secret key (server-side)  | Yes      |
 | `PAYSTACK_PUBLIC_KEY`      | Paystack public key (server-side)  | Yes      |
 | `PORT`                     | Server port (default: 3001)        | No       |
+| `DB_PATH`                  | Database file path (default: `data/orders.db`) | No |
 
 Copy `.env` and fill in your values. Do **not** commit `.env.production` — it's in `.gitignore`.
 

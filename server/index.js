@@ -25,7 +25,8 @@ const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 
-const db = new Database(path.join(__dirname, 'orders.db'));
+const DB_PATH = process.env.DB_PATH || path.join(__dirname, '..', 'data', 'orders.db');
+const db = new Database(DB_PATH);
 db.exec(`CREATE TABLE IF NOT EXISTS orders (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL,
